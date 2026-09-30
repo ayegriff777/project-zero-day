@@ -64,7 +64,7 @@ Root Cause Analysis: Even when configured for Bridge Mode, the consumer-grade ca
 
 Resolution: A full factory hardware reset was applied to the gateway node. The core Xfinity Account Portal back-end systems were then used to issue a manual administrative command to suppress the public hotspot SSID broadcast, permanently disabling the rogue 10.0.0.1 management daemon.
 
-3.3 Outbound WAN Optimization
+###3.3 Outbound WAN Optimization
 To optimize performance and minimize handshake delays during strict 1-hour ISP lease renewal cycles, two critical adjustments were enforced on the TP-Link Archer AX21 router:
 
 MAC Address Cloning: Forced the ISP head-end to permanently bind the public lease allocation to a consistent hardware signature.
@@ -77,11 +77,11 @@ On May 7, 2026, at 17:34:57, the network achieved a stable, public IP allocation
 [2026-05-08 10:33:54] dhcpc: <6> send select request (cliid=01/50:3d:d1:xx:xx:xx)
 [2026-05-08 10:33:55] dhcpc: <6> receive ack from server with ip 73.82.99.123
 
-4. Phase 2: Tiered Network Segmentation (Router-on-a-Switch Model)
+## 4. Phase 2: Tiered Network Segmentation (Router-on-a-Switch Model)
 
 To isolate laboratory vulnerability assessments from standard household traffic, a 3-tier defense-in-depth logical topology was designed and deployed.
 
-4.1 Logical Network Allocation Matrix
+### 4.1 Logical Network Allocation Matrix
 
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      VLAN SEGMENTATION PROFILE                         │
@@ -93,7 +93,7 @@ To isolate laboratory vulnerability assessments from standard household traffic,
 │   50    │ ZDOG Cyber Lab    │ 172.16.0.0/24     │ Full Telemetry Tap   │
 └─────────┴───────────────────┴───────────────────┴──────────────────────┘
 
-4.2 Switch-Level Hardening on the Netgear GS308E
+### 4.2 Switch-Level Hardening on the Netgear GS308E
 To protect against Layer 2 reconnaissance, spoofing, and lateral data injection, the 802.1Q advanced configuration pages on the managed switch were manually hardened:
 
 Parking VLAN 1 (VLAN Hopping Mitigation): To completely eliminate default VLAN reconnaissance or trunk-spoofing injection vectors, the native factory-default VLAN 1 was entirely "parked." Every port on the GS308E (except for the Port 1 Uplink trunk) was explicitly marked as Excluded (E) from VLAN 1 membership.
@@ -104,9 +104,9 @@ Port 2 (IoT AP Link): Untagged (U) for VLAN 20; Excluded from 10 and 50. PVID: 2
 Port 3 (Lab Extension Switch - GS316): Untagged (U) for VLAN 50; Excluded from 10 and 20. PVID: 50. (Forces untagged incoming traffic from the 16-port extension switch into the 172.16.0.0/24 subnet).
 Ports 4-8 (Domestic Endpoints): Untagged (U) for VLAN 10; Excluded from 20 and 50. PVID: 10.
 
-5. Phase 3: The Architectural Pivot to Fedora "Router-on-a-Stick"
+## 5. Phase 3: The Architectural Pivot to Fedora "Router-on-a-Stick"
 
-5.1 Tactical Advantage of Server-Centric Routing
+### 5.1 Tactical Advantage of Server-Centric Routing
 While the initial network layout effectively isolated traffic, the consumer-grade firmware on the TP-Link router abstracted the underlying data plane. This configuration introduced a critical blind spot for security engineering and log analysis.
 The architecture was intentionally modified to implement a Router-on-a-Stick topology via the Bare-Metal Fedora Server. By moving the logical routing intelligence onto the open Linux server kernel, the Fedora host was transformed into the primary internal firewall and traffic controller for the lab.
 
@@ -132,57 +132,57 @@ This approach yielded a significant tactical advantage: it allowed network monit
                   │  └──────────────────┘  │
                   └────────────────────────┘
 
-5.2 Step-by-Step Low-Level Linux Implementation
-Step 1: Kernel 802.1Q Driver Initialization
+### 5.2 Step-by-Step Low-Level Linux Implementation
+**Step 1:** Kernel 802.1Q Driver Initialization
 To enable the OS to process tagged Ethernet headers, the appropriate driver module was loaded into kernel space:
 
-sudo modprobe 8021q
+> sudo modprobe 8021q
 
 To ensure the module remains persistent across system reboots, the configuration was hardcoded to the system startup load files:
 
-sudo modprobe 8021q
+> sudo modprobe 8021q
 
 To ensure the module remains persistent across system reboots, the configuration was hardcoded to the system startup load files:
 
-echo "8021q" | sudo tee /etc/modules-load.d/8021q.conf
+> echo "8021q" | sudo tee /etc/modules-load.d/8021q.conf
 
-Step 2: Virtual Tagged Sub-Interface Architecture
+**Step 2:** Virtual Tagged Sub-Interface Architecture
 Using the NetworkManager CLI (nmcli), explicit virtual sub-interfaces were bound to the physical network interface card (enp3s0) to listen for the switch tags.
 
 Deploying the Cyber Lab Default Gateway (VLAN 50):
 
-sudo nmcli con add type vlan con-name vlan50 ifname enp3s0.50 dev enp3s0 id 50
-sudo nmcli con mod vlan50 ipv4.addresses 172.16.0.1/24 ipv4.method manual
-sudo nmcli con up vlan50
+> sudo nmcli con add type vlan con-name vlan50 ifname enp3s0.50 dev enp3s0 id 50
+> sudo nmcli con mod vlan50 ipv4.addresses 172.16.0.1/24 ipv4.method manual
+> sudo nmcli con up vlan50
 
 Deploying the IoT Sandbox Default Gateway (VLAN 20):
 
-sudo nmcli con add type vlan con-name vlan20 ifname enp3s0.20 dev enp3s0 id 20
-sudo nmcli con mod vlan20 ipv4.addresses 192.168.20.1/24 ipv4.method manual
-sudo nmcli con up vlan20
+> sudo nmcli con add type vlan con-name vlan20 ifname enp3s0.20 dev enp3s0 id 20
+> sudo nmcli con mod vlan20 ipv4.addresses 192.168.20.1/24 ipv4.method manual
+> sudo nmcli con up vlan20
 
-Step 3: Enabling Kernel Packet Forwarding
+**Step 3:** Enabling Kernel Packet Forwarding
 By default, standard Linux server distributions drop transit packets not explicitly addressed to a local host socket. To enable active Layer 3 routing functionality, the kernel data plane was configured to forward transit packets:
 
 echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
-sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
+> sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
 
-Step 4: Firewall Zone Engineering and Unidirectional ACL Design
+**Step 4:** Firewall Zone Engineering and Unidirectional ACL Design
 With routing enabled, the system would natively bridge all zones together without restriction. To enforce strict security boundaries, the firewalld daemon was configured as a stateful access control mechanism, ensuring that high-risk lab networks remained completely isolated from production devices.
 
-# 1. Bind the newly provisioned virtual sub-interfaces to explicit security zones
-sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.50
-sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.20
+** *1. Bind the newly provisioned virtual sub-interfaces to explicit security zones* **
+> sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.50
+> sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.20
 
-# 2. Establish the primary physical untagged interface as the untrusted WAN uplink
-sudo firewall-cmd --permanent --zone=external --add-interface=enp3s0
+** *2. Establish the primary physical untagged interface as the untrusted WAN uplink* **
+> sudo firewall-cmd --permanent --zone=external --add-interface=enp3s0
 
-# 3. Enforce IP Masquerading (NAT) across the external egress interface.
-# This allows virtual lab nodes to securely download external security updates 
-# without exposing their private internal IP addresses to the home network.
-sudo firewall-cmd --permanent --zone=external --add-masquerade
+** *3. Enforce IP Masquerading (NAT) across the external egress interface.* **
+*This allows virtual lab nodes to securely download external security updates*
+*without exposing their private internal IP addresses to the home network.*
+> sudo firewall-cmd --permanent --zone=external --add-masquerade
 
-# 4. Flush and reload the firewalld runtime environment to execute policy blocks
-sudo firewall-cmd --reload
+** *4. Flush and reload the firewalld runtime environment to execute policy blocks* **
+> sudo firewall-cmd --reload
 
 
