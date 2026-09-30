@@ -170,19 +170,19 @@ echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 **Step 4:** Firewall Zone Engineering and Unidirectional ACL Design
 With routing enabled, the system would natively bridge all zones together without restriction. To enforce strict security boundaries, the firewalld daemon was configured as a stateful access control mechanism, ensuring that high-risk lab networks remained completely isolated from production devices.
 
-* **1. Bind the newly provisioned virtual sub-interfaces to explicit security zones** *
+* **1. Bind the newly provisioned virtual sub-interfaces to explicit security zones**
 > sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.50
 > sudo firewall-cmd --permanent --zone=internal --add-interface=enp3s0.20
 
-* **2. Establish the primary physical untagged interface as the untrusted WAN uplink** *
+* **2. Establish the primary physical untagged interface as the untrusted WAN uplink**
 > sudo firewall-cmd --permanent --zone=external --add-interface=enp3s0
 
-* **3. Enforce IP Masquerading (NAT) across the external egress interface.** *
+* **3. Enforce IP Masquerading (NAT) across the external egress interface.**
 *This allows virtual lab nodes to securely download external security updates
 without exposing their private internal IP addresses to the home network.*
 > sudo firewall-cmd --permanent --zone=external --add-masquerade
 
-* **4. Flush and reload the firewalld runtime environment to execute policy blocks** *
+* **4. Flush and reload the firewalld runtime environment to execute policy blocks**
 > sudo firewall-cmd --reload
 
 
