@@ -7,6 +7,7 @@ Project "Zero Day" (ZDOG) marks the systematic engineering of an isolated, multi
 
 By moving away from flat, consumer-grade topologies, this architecture implements absolute logical isolation and rigorous access control planes. This layout ensures that high-risk laboratory environments can coexist safely alongside standard production data segments without cross-contamination.
 
+'''
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                        PROJECT DESIGN BLUEPRINT                          │
 ├───────────────────┬──────────────────────────────┬───────────────────────┤
@@ -16,6 +17,7 @@ By moving away from flat, consumer-grade topologies, this architecture implement
 │ Zero Trust Core   │ • ISC2 CC                    │ • Automated Linting   │
 │ Telemetry Hook    │ • Microsoft SC-900           │ • Syntax Validation   │
 └───────────────────┴──────────────────────────────┴───────────────────────┘
+'''
 
 
 ### 1.2 Human-AI Collaborative Engineering
@@ -83,6 +85,7 @@ To isolate laboratory vulnerability assessments from standard household traffic,
 
 ### 4.1 Logical Network Allocation Matrix
 
+'''
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      VLAN SEGMENTATION PROFILE                         │
 ├─────────┬───────────────────┬───────────────────┬──────────────────────┤
@@ -92,6 +95,7 @@ To isolate laboratory vulnerability assessments from standard household traffic,
 │   20    │ IoT Isolated      │ 192.168.20.0/24   │ Air-Gapped Sandbox   │
 │   50    │ ZDOG Cyber Lab    │ 172.16.0.0/24     │ Full Telemetry Tap   │
 └─────────┴───────────────────┴───────────────────┴──────────────────────┘
+'''
 
 ### 4.2 Switch-Level Hardening on the Netgear GS308E
 To protect against Layer 2 reconnaissance, spoofing, and lateral data injection, the 802.1Q advanced configuration pages on the managed switch were manually hardened:
