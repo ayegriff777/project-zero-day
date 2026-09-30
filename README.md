@@ -7,17 +7,9 @@ Project "Zero Day" (ZDOG) marks the systematic engineering of an isolated, multi
 
 By moving away from flat, consumer-grade topologies, this architecture implements absolute logical isolation and rigorous access control planes. This layout ensures that high-risk laboratory environments can coexist safely alongside standard production data segments without cross-contamination.
 
-'''
-┌──────────────────────────────────────────────────────────────────────────┐
-│                        PROJECT DESIGN BLUEPRINT                          │
-├───────────────────┬──────────────────────────────┬───────────────────────┤
-│    FRAMEWORK      │     CREDENTIAL ALIGNMENT     │  COLLABORATIVE EDGE   │
-├───────────────────┼──────────────────────────────┼───────────────────────┤
-│ Defense-in-Depth  │ • CompTIA Network+           │ • Human-AI Co-Ops     │
-│ Zero Trust Core   │ • ISC2 CC                    │ • Automated Linting   │
-│ Telemetry Hook    │ • Microsoft SC-900           │ • Syntax Validation   │
-└───────────────────┴──────────────────────────────┴───────────────────────┘
-'''
+| FRAMEWORK | CREDENTIAL ALIGNMENT | COLLABORATIVE EDGE |
+| :--- | :--- | :--- |
+| • Defense-in-Depth<br>• Zero Trust Core<br>• Telemetry Hook | • CompTIA Network+<br>• ISC2 CC<br>• Microsoft SC-900 | • Human-AI Co-Ops<br>• Automated Linting<br>• Syntax Validation |
 
 
 ### 1.2 Human-AI Collaborative Engineering
@@ -85,17 +77,11 @@ To isolate laboratory vulnerability assessments from standard household traffic,
 
 ### 4.1 Logical Network Allocation Matrix
 
-'''
-┌────────────────────────────────────────────────────────────────────────┐
-│                      VLAN SEGMENTATION PROFILE                         │
-├─────────┬───────────────────┬───────────────────┬──────────────────────┤
-│ VLAN ID │    TIER NAME      │  SUBNET BOUNDARY  │   SECURITY PROFILE   │
-├─────────┼───────────────────┼───────────────────┼──────────────────────┤
-│   10    │ Home / Trusted    │ 192.168.0.0/24    │ Strict Internal AP   │
-│   20    │ IoT Isolated      │ 192.168.20.0/24   │ Air-Gapped Sandbox   │
-│   50    │ ZDOG Cyber Lab    │ 172.16.0.0/24     │ Full Telemetry Tap   │
-└─────────┴───────────────────┴───────────────────┴──────────────────────┘
-'''
+| SEGMENTATION PROFILE | VLAN ID | TIER           | SUBNET BOUNDARY  | SECURITY PROFILE    |
+| :------------------- | :------ | :------------- | :--------------- | :------------------ |
+| Home / Trusted       | 10      | Home / Trusted | 192.168.0.0/24   | Strict Internal AP  |
+| IoT Isolated         | 20      | IoT Isolated   | 192.168.20.0/24  | Air-Gapped Sandbox  |
+| ZDOG Cyber Lab       | 50      | Cyber Lab      | 172.16.0.0/24    | Full Telemetry Tap  |
 
 ### 4.2 Switch-Level Hardening on the Netgear GS308E
 To protect against Layer 2 reconnaissance, spoofing, and lateral data injection, the 802.1Q advanced configuration pages on the managed switch were manually hardened:
